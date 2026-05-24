@@ -1,8 +1,8 @@
 {
   "name": "NASRDA Ops Hub",
   "short_name": "NASRDA Ops",
-  "start_url": "https://lemecuxuc162-boop.github.io/NASRDA-Ops-Hub/",
-  "scope": "https://lemecuxuc162-boop.github.io/NASRDA-Ops-Hub/",
+  "start_url": "https://lemecuxuc162-boop.github.io/NASRDA-Ops-Hubb/",
+  "scope": "https://lemecuxuc162-boop.github.io/NASRDA-Ops-Hubb/",
   "display": "standalone",
   "background_color": "#0a0e27",
   "theme_color": "#0a0e27",
