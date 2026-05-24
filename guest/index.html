@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NASRDA Ops Hub - Guest Mode</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+</head>
+<body>
+    <!-- HEADER -->
+    <header>
+        <div class="header-container">
+            <div class="logo-section">
+                <div class="logo">🛰️</div>
+                <div>
+                    <div class="agency-name">NASRDA</div>
+                    <div class="agency-tagline">National Space Research and Development Agency</div>
+                </div>
+            </div>
+            <nav>
+                <button class="nav-btn active" data-page="landing">Home</button>
+                <button class="nav-btn" data-page="guest">Guest Mode</button>
+                <button class="nav-btn" data-page="centres">Centres</button>
+                <button class="nav-btn" data-page="departments">Departments</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- MAIN CONTENT -->
+    <main>
+        <!-- LANDING PAGE -->
+        <div class="page active" id="landing">
+            <div class="landing-container">
+                <div class="landing-logo">🛰️</div>
+                <h1>Welcome to NASRDA</h1>
+                <p class="tagline">National Space Research and Development Agency</p>
+                <p class="description">
+                    Advancing Nigeria's space capabilities through innovation, research, and development. 
+                    Explore our facilities, departments, and career opportunities.
+                </p>
+                <div class="button-group">
+                    <button class="btn btn-primary" onclick="navigateTo('guest')">Guest Mode</button>
+                    <button class="btn btn-secondary" onclick="showModal('staff-login')">Staff Login</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- GUEST MODE PAGE -->
+        <div class="page" id="guest">
+            <div class="hero-section">
+                <h2>Welcome to NASRDA Ops Hub - Guest Mode</h2>
+                <p>Explore our research facilities, departments, and latest initiatives. This page works offline once loaded.</p>
+                <div class="offline-badge">✓ Offline Capable</div>
+            </div>
+
+            <div class="section">
+                <h2>About NASRDA</h2>
+                <div class="mission-box">
+                    <h3>Our Mission</h3>
+                    <p>
+                        The National Space Research and Development Agency is dedicated to advancing Nigeria's space technology capabilities, 
+                        conducting cutting-edge research, and developing solutions for national development. We harness the power of space 
+                        technology to address challenges in agriculture, climate monitoring, disaster management, and telecommunications.
+                    </p>
+                </div>
+
+                <div class="mission-box" style="border-left-color: #10b981;">
+                    <h3 style="color: #10b981;">Our Vision</h3>
+                    <p>
+                        To be a world-class space agency driving technological innovation and contributing to Nigeria's socio-economic development 
+                        through space science and technology applications.
+                    </p>
+                </div>
+            </div>
+
+            <div class="section">
+                <h2>Quick Navigation</h2>
+                <div class="cards-grid">
+                    <div class="card" onclick="navigateTo('centres')">
+                        <h3>🏭 Research Centres</h3>
+                        <p>Explore our 11 world-class research facilities and laboratories dedicated to space science and technology.</p>
+                        <a href="#" class="card-link">View Centres →</a>
+                    </div>
+                    <div class="card" onclick="navigateTo('departments')">
+                        <h3>🏢 Departments</h3>
+                        <p>Learn about our organizational structure and the teams that drive innovation at NASRDA.</p>
+                        <a href="#" class="card-link">View Departments →</a>
+                    </div>
+                    <div class="card" onclick="showModal('news')">
+                        <h3>📰 Latest News</h3>
+                        <p>Stay updated with the latest developments, projects, and announcements from NASRDA.</p>
+                        <a href="#" class="card-link">Read News →</a>
+                    </div>
+                    <div class="card" onclick="showModal('careers')">
+                        <h3>💼 Careers</h3>
+                        <p>Join our talented team and contribute to Nigeria's space technology revolution.</p>
+                        <a href="#" class="card-link">View Jobs →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CENTRES PAGE -->
+        <div class="page" id="centres">
+            <div class="section">
+                <h2>NASRDA Research Centres & Laboratories</h2>
+                <p style="color: var(--text-light); margin-bottom: 2rem;">
+                    Explore our 11 state-of-the-art research facilities dedicated to advancing space science and technology in Nigeria.
+                </p>
+                
+                <div class="list-container">
+                    <div class="list-item">
+                        <h3>Space Business & Entrepreneurship Centre (SBEC)</h3>
+                        <p>Promotes space technology entrepreneurship and commercialization of research outputs. Supports startups and small enterprises in the space sector.</p>
+                        <div class="location">📍 Abuja</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Institute for Disaster Risk Reduction (IDRR)</h3>
+                        <p>Focuses on using space technology for disaster management, early warning systems, and risk assessment. Supports emergency response and mitigation strategies.</p>
+                        <div class="location">📍 Lagos</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Climate Change & Agricultural Research Lab</h3>
+                        <p>Develops satellite-based solutions for climate monitoring, precision agriculture, and crop forecasting. Supports food security initiatives.</p>
+                        <div class="location">📍 Ibadan</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Space Technology Applications Centre (STAC)</h3>
+                        <p>Applies space technology to practical challenges in environmental monitoring, urban planning, and infrastructure development.</p>
+                        <div class="location">📍 Abuja</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Satellite Communications Laboratory</h3>
+                        <p>Develops and tests satellite communication systems, ground stations, and network infrastructure for reliable connectivity across Nigeria.</p>
+                        <div class="location">📍 Kano</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Geospatial Information Centre (GIC)</h3>
+                        <p>Specializes in mapping, geospatial analysis, and cartography using satellite imagery. Provides geographical data for development planning.</p>
+                        <div class="location">📍 Lagos</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Satellite Payload Development Lab</h3>
+                        <p>Designs and develops satellite instruments and payloads. Conducts research on advanced sensor technologies and miniaturization.</p>
+                        <div class="location">📍 Abuja</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Space Weather & Ionospheric Research Centre</h3>
+                        <p>Studies space weather phenomena, solar activity, and ionospheric effects on communications and navigation systems.</p>
+                        <div class="location">📍 Calabar</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Launch Vehicle Technology Centre</h3>
+                        <p>Researches and develops indigenous launch vehicle technologies and propulsion systems for Nigeria's space program.</p>
+                        <div class="location">📍 Enugu</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Ground Station Operations Centre</h3>
+                        <p>Manages satellite tracking, telemetry, command operations, and data reception from space-based assets. Provides 24/7 mission operations support.</p>
+                        <div class="location">📍 Abuja</div>
+                    </div>
+                    <div class="list-item">
+                        <h3>Space Science Education & Outreach Centre</h3>
+                        <p>Promotes STEM education, conducts public awareness campaigns, and trains the next generation of space scientists and engineers.</p>
+                        <div class="location">📍 Port Harcourt</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- DEPARTMENTS PAGE -->
+        <div class="page" id="departments">
+            <div class="section">
+                <h2>NASRDA Organizational Departments</h2>
+                <p style="color: var(--text-light); margin-bottom: 2rem;">
+                    Our 10 core departments work together to achieve NASRDA's mission of advancing Nigeria's space capabilities.
+                </p>
+                
+                <div class="list-container">
+                    <div class="list-item">
+                        <h3>Office of the Director-General</h3>
+                        <p>Provides strategic leadership, policy guidance, and overall direction for NASRDA. Handles international relations and stakeholder engagement.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Research & Innovation Department</h3>
+                        <p>Oversees all research activities, innovation initiatives, and technology development programs. Manages research ethics and intellectual property.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Space Technology Operations</h3>
+                        <p>Manages satellite operations, ground stations, mission control, and space asset management. Ensures optimal performance of space systems.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Finance & Administration</h3>
+                        <p>Handles budgeting, financial planning, procurement, human resources, and administrative operations for all NASRDA divisions.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Engineering & Technical Services</h3>
+                        <p>Provides engineering expertise, technical support, and infrastructure maintenance. Oversees facilities and equipment management.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Legal & Compliance</h3>
+                        <p>Ensures regulatory compliance, manages legal affairs, handles contracts, and enforces adherence to national and international space laws.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Public Communications & Outreach</h3>
+                        <p>Manages media relations, public information, educational programs, STEM promotion, and agency communications strategy.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>International Relations & Partnerships</h3>
+                        <p>Develops international collaborations, manages bilateral agreements, coordinates with space agencies, and handles diplomatic engagements.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Information Technology & Cybersecurity</h3>
+                        <p>Manages IT infrastructure, data security, cybersecurity protocols, software systems, and digital transformation initiatives.</p>
+                    </div>
+                    <div class="list-item">
+                        <h3>Quality Assurance & Safety</h3>
+                        <p>Ensures quality standards, workplace safety, risk management, and compliance with safety protocols across all NASRDA operations.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- FOOTER -->
+    <footer>
+        <p>&copy; 2026 NASRDA - National Space Research and Development Agency. All rights reserved.</p>
+        <p>This is a public, offline-capable portal for guest mode access. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
+    </footer>
+
+    <!-- MODALS -->
+    <div class="modal" id="staff-login-modal">
+        <div class="modal-content">
+            <h2>Staff Login</h2>
+            <p>This feature is currently under development. Staff members should use the main NASRDA portal to log in.</p>
+            <button class="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <div class="modal" id="news-modal">
+        <div class="modal-content">
+            <h2>Latest News</h2>
+            <p>News and updates section is coming soon. Check back regularly for the latest NASRDA developments and announcements.</p>
+            <button class="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <div class="modal" id="careers-modal">
+        <div class="modal-content">
+            <h2>Careers at NASRDA</h2>
+            <p>Join our team! Current job openings and career opportunities will be posted here. Visit the main NASRDA website for more information.</p>
+            <button class="close-modal" onclick="closeModal()">Close</button>
+        </div>
+    </div>
+
+    <script src="assets/js/script.js"></script>
+</body>
+</html>
