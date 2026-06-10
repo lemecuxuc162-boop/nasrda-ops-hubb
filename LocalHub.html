@@ -1,0 +1,1540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>LocalHub - B2B Service Network</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html, body {
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, sans-serif;
+            background: #fff;
+        }
+
+        /* AUTH SCREEN */
+        #authScreen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        #authScreen.hidden {
+            display: none;
+        }
+
+        .auth-box {
+            background: white;
+            padding: 30px 20px;
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            width: 90%;
+            max-width: 380px;
+        }
+
+        .auth-box h1 {
+            color: #667eea;
+            font-size: 28px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        .auth-box > p {
+            color: #999;
+            font-size: 13px;
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #333;
+            font-weight: 500;
+            font-size: 13px;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 11px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 14px;
+            font-family: inherit;
+            transition: border-color 0.2s;
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 70px;
+        }
+
+        .auth-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 11px 16px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+
+        .btn-primary:active {
+            background: #5568d3;
+            transform: scale(0.98);
+        }
+
+        .btn-secondary {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .btn-secondary:active {
+            background: #e0e0e0;
+        }
+
+        /* MAIN APP */
+        #appScreen {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            flex-direction: column;
+        }
+
+        #appScreen.visible {
+            display: flex;
+        }
+
+        /* HEADER */
+        .app-header {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+            z-index: 100;
+        }
+
+        .app-header h2 {
+            color: #667eea;
+            font-size: 18px;
+        }
+
+        .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .user-badge-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+        }
+
+        .user-badge-text h4 {
+            color: #333;
+            font-size: 12px;
+            margin: 0;
+        }
+
+        .user-badge-text p {
+            color: #4ade80;
+            font-size: 11px;
+            margin: 0;
+        }
+
+        /* TABS */
+        .tab-buttons {
+            display: flex;
+            gap: 8px;
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            flex-shrink: 0;
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            padding: 8px 14px;
+            background: #e0e0e0;
+            border: none;
+            border-radius: 6px;
+            color: #666;
+            font-weight: 500;
+            font-size: 12px;
+            cursor: pointer;
+            white-space: nowrap;
+            transition: all 0.2s;
+            flex-shrink: 0;
+        }
+
+        .tab-btn.active {
+            background: #667eea;
+            color: white;
+        }
+
+        .tab-badge {
+            display: inline-block;
+            background: #ff6b6b;
+            color: white;
+            border-radius: 50%;
+            width: 16px;
+            height: 16px;
+            line-height: 16px;
+            text-align: center;
+            font-size: 9px;
+            font-weight: 600;
+            margin-left: 4px;
+        }
+
+        /* SEARCH */
+        .search-box {
+            padding: 8px 16px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            flex-shrink: 0;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            background: #f8f8f8;
+        }
+
+        /* CONTENT AREA */
+        .content-area {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .welcome-screen {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 20px;
+            color: #999;
+        }
+
+        .welcome-screen-icon {
+            font-size: 48px;
+            margin-bottom: 15px;
+            opacity: 0.5;
+        }
+
+        .welcome-screen h1 {
+            font-size: 24px;
+            color: #667eea;
+            margin-bottom: 8px;
+        }
+
+        .welcome-screen p {
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .encryption-badge {
+            display: inline-block;
+            background: #dcfce7;
+            color: #166534;
+            padding: 6px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+        }
+
+        .chat-list {
+            padding: 8px;
+        }
+
+        .chat-item {
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+
+        .chat-item:active {
+            background: #f0f0f0;
+            border-left-color: #667eea;
+        }
+
+        .chat-item.active {
+            background: #e8ebf8;
+            border-left-color: #667eea;
+        }
+
+        .chat-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 4px;
+        }
+
+        .chat-item-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+        }
+
+        .chat-item-time {
+            font-size: 11px;
+            color: #999;
+        }
+
+        .chat-item-preview {
+            font-size: 12px;
+            color: #666;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .unread-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            line-height: 18px;
+            text-align: center;
+            font-size: 10px;
+            font-weight: 600;
+            margin-top: 5px;
+        }
+
+        .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 20px;
+            color: #999;
+            text-align: center;
+        }
+
+        .empty-state-icon {
+            font-size: 40px;
+            margin-bottom: 12px;
+            opacity: 0.5;
+        }
+
+        /* SERVICE ITEM */
+        .service-item {
+            padding: 12px 16px;
+            margin-bottom: 4px;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 1px solid #e0e0e0;
+        }
+
+        .service-item:active {
+            background: #f8f8f8;
+        }
+
+        .service-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 5px;
+        }
+
+        .service-item-title {
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            flex: 1;
+        }
+
+        .service-item-price {
+            color: #667eea;
+            font-weight: 600;
+            font-size: 12px;
+            margin-left: 8px;
+        }
+
+        .service-item-provider {
+            font-size: 12px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .service-item-rating {
+            font-size: 11px;
+            color: #ffa500;
+        }
+
+        /* FRIEND REQUEST ITEM */
+        .friend-request-item {
+            padding: 12px 16px;
+            margin-bottom: 8px;
+            background: white;
+            border-radius: 8px;
+            border: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .friend-request-info {
+            flex: 1;
+        }
+
+        .friend-request-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 13px;
+            margin-bottom: 4px;
+        }
+
+        .friend-request-company {
+            font-size: 11px;
+            color: #666;
+        }
+
+        .friend-request-actions {
+            display: flex;
+            gap: 8px;
+        }
+
+        .friend-request-actions button {
+            padding: 6px 10px;
+            border: none;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .accept-btn {
+            background: #4ade80;
+            color: white;
+        }
+
+        .accept-btn:active {
+            background: #22c55e;
+        }
+
+        .decline-btn {
+            background: #f0f0f0;
+            color: #333;
+        }
+
+        .decline-btn:active {
+            background: #e0e0e0;
+        }
+
+        /* CHAT VIEW */
+        .chat-view {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: white;
+            z-index: 50;
+            flex-direction: column;
+        }
+
+        .chat-view.active {
+            display: flex;
+        }
+
+        .chat-header {
+            padding: 12px 16px;
+            background: white;
+            border-bottom: 1px solid #e0e0e0;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .chat-header h3 {
+            color: #333;
+            font-size: 16px;
+        }
+
+        .back-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: #667eea;
+            padding: 4px;
+        }
+
+        .messages-container {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px 16px;
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+        }
+
+        .message {
+            display: flex;
+            gap: 8px;
+            margin-bottom: 8px;
+        }
+
+        .message.own {
+            justify-content: flex-end;
+        }
+
+        .message-bubble {
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            word-wrap: break-word;
+            font-size: 13px;
+        }
+
+        .message.own .message-bubble {
+            background: #667eea;
+            color: white;
+            border-radius: 12px 4px 12px 12px;
+        }
+
+        .message.other .message-bubble {
+            background: #f0f0f0;
+            color: #333;
+            border-radius: 4px 12px 12px 12px;
+        }
+
+        .message-sender {
+            font-weight: 600;
+            font-size: 11px;
+            color: #666;
+            margin-bottom: 4px;
+        }
+
+        .message-time {
+            font-size: 10px;
+            color: #999;
+            margin-top: 4px;
+        }
+
+        .message-input-area {
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .message-input-area input {
+            flex: 1;
+            padding: 10px 12px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 13px;
+            font-family: inherit;
+        }
+
+        .message-send-btn {
+            padding: 10px 14px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .message-send-btn:active {
+            background: #5568d3;
+        }
+
+        /* FOOTER */
+        .app-footer {
+            padding: 12px 16px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .action-btn {
+            flex: 1;
+            min-width: 120px;
+            padding: 10px 12px;
+            border: none;
+            border-radius: 6px;
+            background: #f0f0f0;
+            color: #333;
+            font-weight: 500;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .action-btn:active {
+            background: #e0e0e0;
+        }
+
+        .logout-btn {
+            background: #ff6b6b;
+            color: white;
+        }
+
+        .logout-btn:active {
+            background: #ee5a52;
+        }
+
+        /* MODAL */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            justify-content: center;
+            align-items: flex-end;
+        }
+
+        .modal.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 20px;
+            border-radius: 16px 16px 0 0;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.3s ease-out;
+            position: relative;
+        }
+
+        @keyframes slideUp {
+            from {
+                transform: translateY(100%);
+            }
+            to {
+                transform: translateY(0);
+            }
+        }
+
+        .modal-content h2 {
+            color: #667eea;
+            font-size: 18px;
+            margin-bottom: 15px;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: #999;
+            padding: 4px;
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+        /* TOAST */
+        .toast {
+            position: fixed;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: #333;
+            color: white;
+            padding: 12px 16px;
+            border-radius: 6px;
+            font-size: 13px;
+            z-index: 2000;
+            animation: slideIn 0.3s ease-in-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateY(100px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- AUTH SCREEN -->
+    <div id="authScreen">
+        <div class="auth-box">
+            <h1>LocalHub</h1>
+            <p>Secure B2B Service Network</p>
+
+            <div id="loginForm">
+                <div class="form-group">
+                    <label>Email Address</label>
+                    <input type="email" id="loginEmail" placeholder="demo@company.com" value="demo@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Password</label>
+                    <input type="password" id="loginPassword" placeholder="Password" value="Demo123!">
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary" onclick="login()">Sign In</button>
+                    <button class="btn btn-secondary" onclick="toggleAuthForm()">Sign Up</button>
+                </div>
+            </div>
+
+            <div id="signupForm" style="display: none;">
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="signupName" placeholder="John Doe">
+                </div>
+                <div class="form-group">
+                    <label>Company</label>
+                    <input type="text" id="signupCompany" placeholder="Your Company">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="signupEmail" placeholder="your@company.com">
+                </div>
+                <div class="form-group">
+                    <label>Password (8+ chars, number, special char)</label>
+                    <input type="password" id="signupPassword" placeholder="Password">
+                </div>
+                <div class="form-group">
+                    <label>Confirm Password</label>
+                    <input type="password" id="signupPasswordConfirm" placeholder="Confirm">
+                </div>
+                <div class="form-group">
+                    <label>Industry</label>
+                    <select id="signupIndustry">
+                        <option value="">Select Industry</option>
+                        <option value="tech">Technology</option>
+                        <option value="finance">Finance</option>
+                        <option value="healthcare">Healthcare</option>
+                        <option value="retail">Retail</option>
+                    </select>
+                </div>
+                <div class="auth-buttons">
+                    <button class="btn btn-primary" onclick="signup()">Create Account</button>
+                    <button class="btn btn-secondary" onclick="toggleAuthForm()">Back</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- APP SCREEN -->
+    <div id="appScreen">
+        <div class="app-header">
+            <h2>💼 LocalHub</h2>
+            <div class="user-badge" onclick="showProfile()">
+                <div class="user-badge-avatar" id="userAvatar">U</div>
+                <div class="user-badge-text">
+                    <h4 id="userName">User</h4>
+                    <p>🟢 Online</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="tab-buttons">
+            <button class="tab-btn active" onclick="switchTab(event, 'chats')">Chats</button>
+            <button class="tab-btn" onclick="switchTab(event, 'groups')">Groups</button>
+            <button class="tab-btn" onclick="switchTab(event, 'friends')">Friends <span class="tab-badge" id="friendBadge" style="display:none;"></span></button>
+            <button class="tab-btn" onclick="switchTab(event, 'services')">Services</button>
+        </div>
+
+        <div class="search-box">
+            <input type="text" id="searchInput" placeholder="Search..." onkeyup="searchChats()">
+        </div>
+
+        <div class="content-area">
+            <div id="welcomeScreen" class="welcome-screen">
+                <div class="welcome-screen-icon">💬</div>
+                <h1>Welcome to LocalHub</h1>
+                <p>Select a chat to start messaging</p>
+                <div class="encryption-badge">🔒 End-to-End Encrypted</div>
+            </div>
+
+            <div id="chatList" class="chat-list"></div>
+        </div>
+
+        <div class="app-footer">
+            <button class="action-btn" onclick="openFindFriendsModal()">+ Find Friends</button>
+            <button class="action-btn" onclick="openGroupModal()">+ New Group</button>
+            <button class="action-btn" onclick="openServiceModal()">+ Service</button>
+            <button class="action-btn logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <!-- CHAT VIEW -->
+    <div id="chatView" class="chat-view">
+        <div class="chat-header">
+            <button class="back-btn" onclick="backToChats()">←</button>
+            <h3 id="chatViewTitle">Chat</h3>
+            <div style="width: 20px;"></div>
+        </div>
+        <div class="messages-container" id="messagesContainer"></div>
+        <div class="message-input-area">
+            <input type="text" id="messageInput" placeholder="Type a message..." onkeypress="handleMessageKeypress(event)">
+            <button class="message-send-btn" onclick="sendMessage()">Send</button>
+        </div>
+    </div>
+
+    <!-- FIND FRIENDS MODAL -->
+    <div id="findFriendsModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('findFriendsModal')">✕</button>
+            <h2>Find Friends</h2>
+            <div class="search-box" style="padding: 0; border: none; margin-bottom: 15px;">
+                <input type="text" id="friendSearch" placeholder="Search by email or name..." onkeyup="searchFriends()">
+            </div>
+            <div id="friendsList"></div>
+        </div>
+    </div>
+
+    <!-- GROUP MODAL -->
+    <div id="groupModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('groupModal')">✕</button>
+            <h2>Create Group</h2>
+            <div class="form-group">
+                <label>Group Name</label>
+                <input type="text" id="groupName" placeholder="Sales Team">
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="groupDesc" placeholder="Group purpose..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Members (emails, comma-separated)</label>
+                <textarea id="groupMembers" placeholder="user1@company.com, user2@company.com"></textarea>
+            </div>
+            <div class="form-group">
+                <label><input type="checkbox" id="groupEncrypted" checked> End-to-End Encrypted</label>
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="createGroup()">Create</button>
+                <button class="btn btn-secondary" onclick="closeModal('groupModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- SERVICE MODAL -->
+    <div id="serviceModal" class="modal">
+        <div class="modal-content">
+            <button class="close-btn" onclick="closeModal('serviceModal')">✕</button>
+            <h2>Offer Service</h2>
+            <div class="form-group">
+                <label>Service Title</label>
+                <input type="text" id="serviceTitle" placeholder="UI/UX Design">
+            </div>
+            <div class="form-group">
+                <label>Category</label>
+                <select id="serviceCategory">
+                    <option value="">Select Category</option>
+                    <option value="design">Design</option>
+                    <option value="development">Development</option>
+                    <option value="consulting">Consulting</option>
+                    <option value="marketing">Marketing</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Description</label>
+                <textarea id="serviceDesc" placeholder="What you offer..."></textarea>
+            </div>
+            <div class="form-group">
+                <label>Price/Rate</label>
+                <input type="text" id="servicePrice" placeholder="$50/hour">
+            </div>
+            <div class="modal-buttons">
+                <button class="btn btn-primary" onclick="offerService()">Post Service</button>
+                <button class="btn btn-secondary" onclick="closeModal('serviceModal')">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        class SecurityManager {
+            static generateHash(data) {
+                let hash = 0;
+                for (let i = 0; i < data.length; i++) {
+                    hash = ((hash << 5) - hash) + data.charCodeAt(i);
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(16);
+            }
+
+            static validatePassword(pwd) {
+                return pwd.length >= 8 && /\d/.test(pwd) && /[!@#$%^&*()_+\-=\[\]{};':"\\\|,.<>\/?]/.test(pwd);
+            }
+        }
+
+        let appState = {
+            currentUser: null,
+            currentChat: null,
+            chats: {},
+            services: [],
+            friends: [],
+            friendRequests: [],
+            availableUsers: [],
+            currentTab: 'chats'
+        };
+
+        function toggleAuthForm() {
+            document.getElementById('loginForm').style.display = 
+                document.getElementById('loginForm').style.display === 'none' ? 'block' : 'none';
+            document.getElementById('signupForm').style.display = 
+                document.getElementById('signupForm').style.display === 'none' ? 'block' : 'none';
+        }
+
+        function signup() {
+            const name = document.getElementById('signupName').value;
+            const company = document.getElementById('signupCompany').value;
+            const email = document.getElementById('signupEmail').value;
+            const password = document.getElementById('signupPassword').value;
+            const passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+            const industry = document.getElementById('signupIndustry').value;
+
+            if (!name || !company || !email || !password || !industry) {
+                showToast('Please fill all fields');
+                return;
+            }
+
+            if (password !== passwordConfirm) {
+                showToast('Passwords do not match');
+                return;
+            }
+
+            if (!SecurityManager.validatePassword(password)) {
+                showToast('Password: 8+ chars, number, special char');
+                return;
+            }
+
+            const user = {
+                id: SecurityManager.generateHash(email),
+                name, email, company, industry,
+                passwordHash: SecurityManager.generateHash(password),
+                avatar: name.charAt(0).toUpperCase()
+            };
+
+            localStorage.setItem('user_' + email, JSON.stringify(user));
+            showToast('Account created! Sign in now.');
+            setTimeout(() => toggleAuthForm(), 500);
+        }
+
+        function login() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+
+            if (!email || !password) {
+                showToast('Enter email and password');
+                return;
+            }
+
+            let user = null;
+
+            if (email === 'demo@company.com' && password === 'Demo123!') {
+                user = {
+                    id: 'demo123',
+                    name: 'Demo User',
+                    email: 'demo@company.com',
+                    company: 'Demo Corp',
+                    avatar: 'D'
+                };
+            } else {
+                const stored = localStorage.getItem('user_' + email);
+                if (stored) {
+                    user = JSON.parse(stored);
+                    if (user.passwordHash !== SecurityManager.generateHash(password)) {
+                        showToast('Invalid password');
+                        return;
+                    }
+                } else {
+                    showToast('Account not found');
+                    return;
+                }
+            }
+
+            appState.currentUser = user;
+            document.getElementById('authScreen').classList.add('hidden');
+            document.getElementById('appScreen').classList.add('visible');
+            document.getElementById('userName').textContent = user.name;
+            document.getElementById('userAvatar').textContent = user.avatar;
+
+            initializeApp();
+            showToast('Welcome, ' + user.name + '!');
+        }
+
+        function logout() {
+            if (confirm('Logout?')) {
+                appState = { currentUser: null, currentChat: null, chats: {}, services: [], friends: [], friendRequests: [], availableUsers: [], currentTab: 'chats' };
+                document.getElementById('authScreen').classList.remove('hidden');
+                document.getElementById('appScreen').classList.remove('visible');
+                document.getElementById('chatView').classList.remove('active');
+                document.getElementById('loginEmail').value = '';
+                document.getElementById('loginPassword').value = '';
+                showToast('Logged out');
+            }
+        }
+
+        function initializeApp() {
+            createDemoChats();
+            createDemoServices();
+            createAvailableUsers();
+            loadFriendRequests();
+            renderChatList();
+            updateFriendBadge();
+        }
+
+        function createDemoChats() {
+            appState.chats = {
+                '1': {
+                    id: '1', name: 'Alice Johnson', type: 'direct', status: 'online',
+                    lastMessage: 'Sounds good!', timestamp: '2:45 PM',
+                    messages: [
+                        { sender: 'other', senderName: 'Alice', text: 'Hi! How are you?', time: '2:30 PM' },
+                        { sender: 'self', text: 'Great! You?', time: '2:35 PM' },
+                        { sender: 'other', senderName: 'Alice', text: 'Sounds good!', time: '2:45 PM' }
+                    ]
+                },
+                '2': {
+                    id: '2', name: 'Sales Team', type: 'group', status: 'active',
+                    lastMessage: 'Q3 targets updated', timestamp: '1:20 PM', unread: 3,
+                    members: ['Alice', 'Bob', 'Carol'],
+                    messages: [
+                        { sender: 'other', senderName: 'Bob', text: 'New leads coming in!', time: '12:00 PM' },
+                        { sender: 'self', text: 'I\'ll follow up on them', time: '12:15 PM' },
+                        { sender: 'other', senderName: 'Carol', text: 'Q3 targets updated', time: '1:20 PM' }
+                    ]
+                }
+            };
+        }
+
+        function createDemoServices() {
+            appState.services = [
+                { id: 1, provider: 'Design Studio', title: 'UI/UX Design', category: 'design', price: '$50-150/hr', rating: 4.8, verified: true },
+                { id: 2, provider: 'Tech Consultants', title: 'Cloud Setup', category: 'consulting', price: '$100/hr', rating: 4.9, verified: true },
+                { id: 3, provider: 'Dev Agency', title: 'Full Stack Dev', category: 'development', price: '$80-120/hr', rating: 4.7, verified: true }
+            ];
+        }
+
+        function createAvailableUsers() {
+            appState.availableUsers = [
+                { id: 'u1', name: 'Bob Smith', email: 'bob@company.com', company: 'Tech Corp', avatar: 'B' },
+                { id: 'u2', name: 'Carol White', email: 'carol@company.com', company: 'Design Inc', avatar: 'C' },
+                { id: 'u3', name: 'David Brown', email: 'david@company.com', company: 'Finance Ltd', avatar: 'D' },
+                { id: 'u4', name: 'Emma Davis', email: 'emma@company.com', company: 'Marketing Co', avatar: 'E' }
+            ];
+        }
+
+        function loadFriendRequests() {
+            const stored = localStorage.getItem('friendRequests_' + appState.currentUser.id);
+            if (stored) {
+                appState.friendRequests = JSON.parse(stored);
+            } else {
+                appState.friendRequests = [
+                    { id: 'u1', name: 'Bob Smith', email: 'bob@company.com', company: 'Tech Corp', avatar: 'B' }
+                ];
+                saveFriendRequests();
+            }
+        }
+
+        function saveFriendRequests() {
+            localStorage.setItem('friendRequests_' + appState.currentUser.id, JSON.stringify(appState.friendRequests));
+        }
+
+        function updateFriendBadge() {
+            const badge = document.getElementById('friendBadge');
+            if (appState.friendRequests.length > 0) {
+                badge.textContent = appState.friendRequests.length;
+                badge.style.display = 'inline-block';
+            } else {
+                badge.style.display = 'none';
+            }
+        }
+
+        function renderChatList() {
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+            let items = [];
+
+            if (appState.currentTab === 'chats') {
+                items = Object.values(appState.chats).filter(c => c.type !== 'group');
+            } else if (appState.currentTab === 'groups') {
+                items = Object.values(appState.chats).filter(c => c.type === 'group');
+            } else if (appState.currentTab === 'friends') {
+                renderFriendsList();
+                return;
+            } else if (appState.currentTab === 'services') {
+                renderServicesList();
+                return;
+            }
+
+            if (items.length === 0) {
+                chatList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">📭</div><p>No items yet</p></div>';
+                return;
+            }
+
+            items.forEach(chat => {
+                const el = document.createElement('div');
+                el.className = 'chat-item' + (appState.currentChat === chat.id ? ' active' : '');
+                el.onclick = () => openChat(chat.id);
+
+                let unreadHtml = chat.unread ? '<div class="unread-badge">' + chat.unread + '</div>' : '';
+
+                el.innerHTML = `
+                    <div class="chat-item-header">
+                        <span class="chat-item-name">${chat.name}</span>
+                        <span class="chat-item-time">${chat.timestamp}</span>
+                    </div>
+                    <div class="chat-item-preview">${chat.lastMessage}</div>
+                    ${unreadHtml}
+                `;
+                chatList.appendChild(el);
+            });
+        }
+
+        function renderFriendsList() {
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+
+            if (appState.friendRequests.length > 0) {
+                const heading = document.createElement('div');
+                heading.innerHTML = '<div style="padding: 12px 16px; font-weight: 600; color: #667eea; font-size: 12px;">FRIEND REQUESTS (' + appState.friendRequests.length + ')</div>';
+                chatList.appendChild(heading);
+
+                appState.friendRequests.forEach(req => {
+                    const el = document.createElement('div');
+                    el.className = 'friend-request-item';
+                    el.innerHTML = `
+                        <div class="friend-request-info">
+                            <div class="friend-request-name">${req.name}</div>
+                            <div class="friend-request-company">${req.company}</div>
+                        </div>
+                        <div class="friend-request-actions">
+                            <button class="accept-btn" onclick="acceptFriend('${req.id}')">Accept</button>
+                            <button class="decline-btn" onclick="declineFriend('${req.id}')">Decline</button>
+                        </div>
+                    `;
+                    chatList.appendChild(el);
+                });
+            }
+
+            if (appState.friends.length > 0) {
+                const heading = document.createElement('div');
+                heading.innerHTML = '<div style="padding: 12px 16px; font-weight: 600; color: #667eea; font-size: 12px; margin-top: 12px;">FRIENDS (' + appState.friends.length + ')</div>';
+                chatList.appendChild(heading);
+
+                appState.friends.forEach(friend => {
+                    const el = document.createElement('div');
+                    el.className = 'chat-item';
+                    el.onclick = () => openChat(friend.chatId);
+                    el.innerHTML = `
+                        <div class="chat-item-header">
+                            <span class="chat-item-name">${friend.name}</span>
+                            <span class="chat-item-time">🟢</span>
+                        </div>
+                        <div class="chat-item-preview">${friend.company}</div>
+                    `;
+                    chatList.appendChild(el);
+                });
+            }
+
+            if (appState.friendRequests.length === 0 && appState.friends.length === 0) {
+                chatList.innerHTML = '<div class="empty-state"><div class="empty-state-icon">👥</div><p>No friends yet. Find some!</p></div>';
+            }
+        }
+
+        function renderServicesList() {
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+
+            appState.services.forEach(svc => {
+                const el = document.createElement('div');
+                el.className = 'service-item';
+                el.onclick = () => showToast('Contact: ' + svc.provider);
+
+                el.innerHTML = `
+                    <div class="service-item-header">
+                        <span class="service-item-title">${svc.title}</span>
+                        <span class="service-item-price">${svc.price}</span>
+                    </div>
+                    <div class="service-item-provider">${svc.provider} ${svc.verified ? '✓' : ''}</div>
+                    <div class="service-item-rating">★ ${svc.rating}</div>
+                `;
+                chatList.appendChild(el);
+            });
+        }
+
+        function openChat(id) {
+            appState.currentChat = id;
+            const chat = appState.chats[id];
+            document.getElementById('chatViewTitle').textContent = chat.name;
+            renderMessages(chat);
+            document.getElementById('appScreen').style.display = 'none';
+            document.getElementById('chatView').classList.add('active');
+            document.getElementById('messageInput').value = '';
+            document.getElementById('messageInput').focus();
+        }
+
+        function renderMessages(chat) {
+            const container = document.getElementById('messagesContainer');
+            container.innerHTML = '';
+
+            chat.messages.forEach(msg => {
+                const msgEl = document.createElement('div');
+                msgEl.className = 'message ' + (msg.sender === 'self' ? 'own' : 'other');
+
+                const bubble = document.createElement('div');
+                bubble.className = 'message-bubble';
+
+                if (msg.sender === 'other') {
+                    bubble.innerHTML = `<div class="message-sender">${msg.senderName || 'User'}</div>${msg.text}`;
+                } else {
+                    bubble.textContent = msg.text;
+                }
+
+                msgEl.appendChild(bubble);
+
+                if (msg.time) {
+                    const timeEl = document.createElement('div');
+                    timeEl.className = 'message-time';
+                    timeEl.textContent = msg.time;
+                    msgEl.appendChild(timeEl);
+                }
+
+                container.appendChild(msgEl);
+            });
+
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function sendMessage() {
+            const input = document.getElementById('messageInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            const chat = appState.chats[appState.currentChat];
+            const now = new Date();
+            const time = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            chat.messages.push({
+                sender: 'self',
+                text: text,
+                time: time
+            });
+
+            chat.lastMessage = text;
+            chat.timestamp = time;
+
+            input.value = '';
+            renderMessages(chat);
+            renderChatList();
+        }
+
+        function handleMessageKeypress(e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        }
+
+        function backToChats() {
+            document.getElementById('chatView').classList.remove('active');
+            document.getElementById('appScreen').style.display = 'flex';
+            renderChatList();
+        }
+
+        function switchTab(e, tab) {
+            appState.currentTab = tab;
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            e.target.classList.add('active');
+            renderChatList();
+        }
+
+        function searchChats() {
+            const query = document.getElementById('searchInput').value.toLowerCase();
+            const chatList = document.getElementById('chatList');
+            chatList.innerHTML = '';
+
+            let results = [];
+
+            if (appState.currentTab === 'chats') {
+                results = Object.values(appState.chats).filter(c => c.type !== 'group' && c.name.toLowerCase().includes(query));
+            } else if (appState.currentTab === 'groups') {
+                results = Object.values(appState.chats).filter(c => c.type === 'group' && c.name.toLowerCase().includes(query));
+            } else if (appState.currentTab === 'friends') {
+                results = appState.friends.filter(f => f.name.toLowerCase().includes(query) || f.company.toLowerCase().includes(query));
+            } else if (appState.currentTab === 'services') {
+                results = appState.services.filter(s => s.title.toLowerCase().includes(query) || s.provider.toLowerCase().includes(query));
+            }
+
+            if (results.length === 0) {
+                chatList.innerHTML = '<div class="empty-state"><p>No results</p></div>';
+                return;
+            }
+
+            results.forEach(item => {
+                const el = document.createElement('div');
+                if (item.type) {
+                    el.className = 'chat-item';
+                    el.innerHTML = `<div class="chat-item-name">${item.name}</div>`;
+                    el.onclick = () => openChat(item.id);
+                } else {
+                    el.className = 'service-item';
+                    el.innerHTML = `<div class="service-item-title">${item.title || item.name}</div>`;
+                }
+                chatList.appendChild(el);
+            });
+        }
+
+        function openFindFriendsModal() {
+            document.getElementById('findFriendsModal').classList.add('show');
+            searchFriends();
+        }
+
+        function searchFriends() {
+            const query = document.getElementById('friendSearch').value.toLowerCase();
+            const friendsList = document.getElementById('friendsList');
+            friendsList.innerHTML = '';
+
+            let results = appState.availableUsers.filter(u => 
+                !appState.friends.find(f => f.id === u.id) &&
+                !appState.friendRequests.find(f => f.id === u.id) &&
+                (u.name.toLowerCase().includes(query) || u.email.toLowerCase().includes(query))
+            );
+
+            if (results.length === 0) {
+                friendsList.innerHTML = '<div class="empty-state"><p>No users found</p></div>';
+                return;
+            }
+
+            results.forEach(user => {
+                const el = document.createElement('div');
+                el.className = 'chat-item';
+                el.innerHTML = `
+                    <div class="chat-item-header">
+                        <span class="chat-item-name">${user.name}</span>
+                        <button class="btn btn-primary" style="flex: 0; padding: 6px 12px; font-size: 11px;" onclick="sendFriendRequest('${user.id}', '${user.name}', '${user.email}', '${user.company}')">+ Add</button>
+                    </div>
+                    <div class="chat-item-preview">${user.email}</div>
+                `;
+                friendsList.appendChild(el);
+            });
+        }
+
+        function sendFriendRequest(id, name, email, company) {
+            appState.availableUsers.splice(appState.availableUsers.findIndex(u => u.id === id), 1);
+            showToast('Friend request sent to ' + name);
+            searchFriends();
+        }
+
+        function acceptFriend(id) {
+            const req = appState.friendRequests.find(r => r.id === id);
+            appState.friends.push({
+                id: req.id,
+                name: req.name,
+                email: req.email,
+                company: req.company,
+                avatar: req.avatar,
+                chatId: 'chat_' + req.id,
+                status: 'online'
+            });
+
+            appState.chats['chat_' + req.id] = {
+                id: 'chat_' + req.id,
+                name: req.name,
+                type: 'direct',
+                status: 'online',
+                lastMessage: 'Now connected!',
+                timestamp: 'now',
+                messages: [{ sender: 'other', senderName: req.name, text: 'Hi! Let\'s connect', time: 'now' }]
+            };
+
+            appState.friendRequests = appState.friendRequests.filter(r => r.id !== id);
+            saveFriendRequests();
+            updateFriendBadge();
+            renderChatList();
+            showToast('You are now friends with ' + req.name);
+        }
+
+        function declineFriend(id) {
+            appState.friendRequests = appState.friendRequests.filter(r => r.id !== id);
+            saveFriendRequests();
+            updateFriendBadge();
+            renderChatList();
+            showToast('Friend request declined');
+        }
+
+        function openGroupModal() {
+            document.getElementById('groupModal').classList.add('show');
+        }
+
+        function openServiceModal() {
+            document.getElementById('serviceModal').classList.add('show');
+        }
+
+        function closeModal(id) {
+            document.getElementById(id).classList.remove('show');
+        }
+
+        function createGroup() {
+            const name = document.getElementById('groupName').value;
+            const members = document.getElementById('groupMembers').value.split(',').map(m => m.trim());
+
+            if (!name) {
+                showToast('Enter group name');
+                return;
+            }
+
+            const id = 'g' + Math.random().toString(36).substr(2, 9);
+            appState.chats[id] = {
+                id, name, type: 'group', status: 'active',
+                lastMessage: 'Group created', timestamp: 'now',
+                members: [appState.currentUser.name, ...members],
+                messages: []
+            };
+
+            closeModal('groupModal');
+            document.getElementById('groupName').value = '';
+            document.getElementById('groupMembers').value = '';
+            appState.currentTab = 'groups';
+            renderChatList();
+            showToast('Group created!');
+        }
+
+        function offerService() {
+            const title = document.getElementById('serviceTitle').value;
+            const category = document.getElementById('serviceCategory').value;
+            const price = document.getElementById('servicePrice').value;
+
+            if (!title || !category || !price) {
+                showToast('Fill all fields');
+                return;
+            }
+
+            appState.services.push({
+                id: Date.now(),
+                provider: appState.currentUser.company,
+                title, category, price,
+                rating: 5.0,
+                verified: false
+            });
+
+            closeModal('serviceModal');
+            document.getElementById('serviceTitle').value = '';
+            document.getElementById('serviceCategory').value = '';
+            document.getElementById('servicePrice').value = '';
+            showToast('Service posted!');
+        }
+
+        function showProfile() {
+            showToast('👤 ' + appState.currentUser.name + ' | ' + appState.currentUser.company);
+        }
+
+        function showToast(msg) {
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            document.body.appendChild(toast);
+            setTimeout(() => toast.remove(), 3000);
+        }
+
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('modal')) {
+                e.target.classList.remove('show');
+            }
+        });
+    </script>
+</body>
+</html>
